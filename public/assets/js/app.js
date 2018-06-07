@@ -38,18 +38,18 @@ $("document").on("click", ".delete", function() {
 })
 
 
-// /// single article view
-// $("document").on("click", "h2", function() {
-// 	var thisId = $(this).attr("data-id");
-// 	$.ajax({
-// 		method: "GET",
-// 		url: "/articles/" + thisId
-// 	})
-// 	.then(function(data) {
-// 		console.log("article")
+ /// single article view
+ $("document").on("click", "h2", function() {
+ 	var thisId = $(this).attr("data-id");
+ 	 	$.ajax({
+		method: "GET",
+ 		url: "/articles/" + thisId
+ 	})
+ 	.then(function(data) {
+ 		console.log("article")
 
-// 	})
-// })
+ 	})
+ })
 
 
 // save note button
@@ -60,15 +60,15 @@ $("document").on("click", ".savenote", function() {
 		method: "POST",
 		url: "/articles/note/" + thisId,
 		data: {
-			name: $("#note-name" + thisId).val().trim()
-			body: $("#note-body" + thisId).val().trim()
+			name: $("#note-name" + thisId().val().trim()),
+			body: $("#note-body" + thisId().val().trim())
 		}
 	}).then(function(data) {
 		console.log(data);
 
-		$("#note-name" + thisId).val("");
-		$("#note-body" + thisId).val("");
-		$(".note-modal" + thisId).val("");
+		$("#note-name" + thisId().val(""));
+		$("#note-body" + thisId().val(""));
+		$(".note-modal" + thisId().val(""));
 		window.location = "/articles/" + thisId;
 	})
 

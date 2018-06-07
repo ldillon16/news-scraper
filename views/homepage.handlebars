@@ -13,7 +13,7 @@
  {{#if Articles}}
 
   {{#each Articles}}
-    <div class="col-sm-8">
+    <div class="col-lg-12">
       <div class="card">
         <div class="card-title">
           <h2 class="article-title">
@@ -25,7 +25,7 @@
           <a href ={{this.link}} target="_blank">{{this.link}}</a>
         </div>
         <div class="card-footer">
-          <button type="button" class="save" data-id="{{this._id}}">Save</button>
+          <button type="button" class="save-article btn btn-info" data-id="{{this._id}}">Save</button>
 
         </div>
       </div>

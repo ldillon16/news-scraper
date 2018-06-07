@@ -4,7 +4,6 @@ var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var path = require("path");
-var methodOverride = require("method-override");
 
 // scraping tools
 var request = require("request");
@@ -20,7 +19,7 @@ var PORT = process.env.PORT || 8080;
 // initialize express
 var app = express();
 
-app.use(methodOverride("_method"));
+
 
 // config middleware
 
@@ -34,7 +33,7 @@ app.use(express.static("public"));
 
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/mongo-scraper-db");
+mongoose.connect("mongodb://localhost/nytdb");
 
 
 
@@ -123,6 +122,20 @@ app.get("/scrape", function(req, res) {
 		res.redirect("/")
 		console.log("scrape complete!")
 	});
+});
+
+// GET route for articles we scraped from the mongoDB
+app.get("/articles", function(req, res) {
+  // Grab every doc in the Articles array
+  Articles.find({}, function(error, doc) {
+    // Log any errors
+    if (error) {
+      console.log(error);
+    }
+    else {
+      res.json(doc);
+    }
+  });
 });
 
 // GET route for getting article by id
