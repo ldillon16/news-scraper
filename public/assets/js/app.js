@@ -1,8 +1,9 @@
+console.log("RUNNING JS");
 
 // scrape button
-$("document").on("click", "#scrape", function() {
+$("body").on("click", "#scrape", function() {
+	console.log("scrape clicked")
 	$.ajax({
-
 		method: "GET",
 		url: "/scrape"
 	}).then(function(data) {
@@ -13,7 +14,7 @@ $("document").on("click", "#scrape", function() {
 
 
 // save article button
-$("document").on("click", ".save", function() {
+$("body").on("click", ".save", function() {
 	console.log("save button clicked")
 	var thisId = $(this).attr("data-id");
 	$.ajax({
@@ -27,7 +28,7 @@ $("document").on("click", ".save", function() {
 })
 
 // delete article button
-$("document").on("click", ".delete", function() {
+$("body").on("click", ".delete", function() {
 	var thisId = $(this).attr("data-id");
 	$.ajax({
 		method: "POST",
@@ -39,7 +40,7 @@ $("document").on("click", ".delete", function() {
 
 
  /// single article view
- $("document").on("click", "h2", function() {
+ $("body").on("click", ".article-title", function() {
  	var thisId = $(this).attr("data-id");
  	 	$.ajax({
 		method: "GET",
@@ -53,7 +54,7 @@ $("document").on("click", ".delete", function() {
 
 
 // save note button
-$("document").on("click", ".savenote", function() {
+$("body").on("click", ".savenote", function() {
 	var thisId = $(this).attr("data-id");
 
 	$.ajax({
@@ -77,7 +78,7 @@ $("document").on("click", ".savenote", function() {
 
 
 // // save note button
-// $("document").on("click", ".savenote", function() {
+// $("body").on("click", ".savenote", function() {
 
 // 	var thisId = $(this).attr("data-id");
 // 	$.ajax({
@@ -101,7 +102,7 @@ $("document").on("click", ".savenote", function() {
 
 
 // delete note button
-$("document").on("click", ".delete-note", function() {
+$("body").on("click", ".delete-note", function() {
 	var note_id = $(this).attr("data-note-id");
 	var article_id = $(this).attr("data-article-id");
 	$.ajax({
