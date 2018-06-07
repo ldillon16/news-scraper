@@ -1,0 +1,47 @@
+<head>
+  <link rel="stylesheet" href="/css/style.css" type="text/html" />
+</head>
+
+<div class="container">
+  <div class="col-md-12 jumbotron">
+    <div class="text-center">
+      <h1> New York Times Mongo Scraper</h1>
+    </div>
+  </div>
+
+ <div class="col-md-12">
+ {{#if Articles}}
+
+  {{#each Articles}}
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-title">
+          <h2 class="article-title">
+            <a href="/articles/{{this._id}}">{{this.title}}</a>
+          </h2>
+        </div>
+        <div class="card-body">
+          <p class="card-text">{{this.summary}}</p>
+          <a href ={{this.link}} target="_blank">{{this.link}}</a>
+        </div>
+        <div class="card-footer">
+          <button type="button" class="save" data-id="{{this._id}}">Save</button>
+
+        </div>
+      </div>
+    </div>
+
+    {{/each}}
+  {{else}}
+    <div class="col-sm-8">
+      <div>
+        <h4> Oh no! We don't have any new articles for you :( </h4>
+      </div>
+    </div>
+
+
+ {{/if}}
+ </div>
+
+
+</div>
