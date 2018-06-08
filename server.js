@@ -30,10 +30,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
-
+// mongodb://heroku_1rwl0r82:ormk7a34jb22ca57hdi2lhkrc7@ds151970.mlab.com:51970/heroku_1rwl0r82
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://heroku_1rwl0r82:ormk7a34jb22ca57hdi2lhkrc7@ds151970.mlab.com:51970/heroku_1rwl0r82");
+mongoose.connect('mongodb://localhost/nytdb');
 var db = mongoose.connection;
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
@@ -110,6 +110,8 @@ app.get("/scrape", function(req, res) {
 			// 	});
 
 			var entry = new Articles(result);
+			console.log(entry);
+			console.log("test");
 
 			entry.save(function(err, doc) {
 				if (err) {
@@ -147,7 +149,7 @@ app.get("/articles/:_id", function(req, res) {
 	Articles.findOne({ "_id": req.params.id })
 	// populate notes associated with the article
 	.populate("note")
-	.then(function(dbArticle) {
+	.then(function(err, dbArticle) {
 		// if we're able to successfully update article, send back to client
 			// handlebars 
 			var hbsObject = {

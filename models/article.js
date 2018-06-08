@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-var Note = require("./note");
+var Notes = require("./note");
 
 // save a reference to the schema constructor
 var Schema = mongoose.Schema;

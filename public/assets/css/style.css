@@ -64,7 +64,12 @@ body {
 }
 
 .article-title {
-    color: darkgrey;
+    color: #334d4d;
+    text-shadow: 2px 2px 4px ghostwhite;
+}
+
+.card-text {
+        color: #334d4d;
 }
 
 .save-article {
