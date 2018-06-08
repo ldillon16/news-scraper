@@ -11,7 +11,7 @@ var cheerio = require("cheerio");
 
 // requiring all models
 var Notes = require("./models/note.js");
-var Articles = require("./models/article.js")
+var Articles = require("./models/article.js");
 
 // port
 var PORT = process.env.PORT || 8080;
@@ -19,7 +19,7 @@ var PORT = process.env.PORT || 8080;
 // initialize express
 var app = express();
 
-
+var db = require("./models");
 
 // config middleware
 
@@ -34,7 +34,7 @@ app.use(express.static("public"));
 
 // Connect to the Mongo DB
 mongoose.connect('mongodb://localhost/nytdb');
-var db = mongoose.connection;
+// var db = mongoose.connection;
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/nytdb";
@@ -42,7 +42,7 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/nytdb";
 // Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
 mongoose.Promise = Promise;
-mongoose.connect(MONGODB_URI);
+// mongoose.connect(MONGODB_URI);
 
 
 // // Show mongoose errors
@@ -65,7 +65,7 @@ app.set("view engine", "handlebars");
 
 // homepage route
 app.get("/", function(req, res) {
-	Articles.find({ "saved": false }, function(err, data) {
+	db.Articles.find({ "saved": false }, function(err, data) {
 	 	var hbsObject = {
 	 		Articles: data
 	 	};
@@ -99,28 +99,28 @@ app.get("/scrape", function(req, res) {
 				.attr("href");
 
 			// create new article using "result" object built from scraping 
-			// Article.create(result)
-			// 	.then(function(dbArticle) {
-			// 		// display added result in console
-			// 		console.log(dbArticle);
-			// 	})
-			// 	.catch(function(err) {
-			// 		// if an error occurs, send it to the client
-			// 		return res.json(err);
-			// 	});
+			db.Articles.create(result)
+				.then(function(dbArticle) {
+					// display added result in console
+					console.log(dbArticle);
+				})
+				.catch(function(err) {
+					// if an error occurs, send it to the client
+					return res.json(err);
+				});
 
-			var entry = new Articles(result);
-			console.log(entry);
-			console.log("test");
+			// var entry = new Articles(result);
+			// console.log(entry);
+			// console.log("test");
 
-			entry.save(function(err, doc) {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					console.log(doc);
-				}
-			})
+			// entry.save(function(err, doc) {
+			// 	if (err) {
+			// 		console.log(err);
+			// 	}
+			// 	else {
+			// 		console.log(doc);
+			// 	}
+			// })
 		});
 
 		// if we are able to successfully scrape & save an Article, send a msg to the client
@@ -132,7 +132,7 @@ app.get("/scrape", function(req, res) {
 // GET route for articles we scraped from the mongoDB
 app.get("/articles", function(req, res) {
   // Grab every doc in the Articles array
-  Articles.find({}, function(error, doc) {
+  db.Articles.find({}, function(error, doc) {
     // Log any errors
     if (error) {
       console.log(error);
@@ -146,7 +146,7 @@ app.get("/articles", function(req, res) {
 // GET route for getting article by id
 app.get("/articles/:_id", function(req, res) {
 	// grab article by id
-	Articles.findOne({ "_id": req.params.id })
+	db.Articles.findOne({ "_id": req.params.id })
 	// populate notes associated with the article
 	.populate("note")
 	.then(function(err, dbArticle) {
@@ -169,7 +169,7 @@ app.get("/articles/:_id", function(req, res) {
 app.get("/articles/saved", function(req, res) {
 	// grab every article in the saved Articles collection
 	console.log("SAVED");
-	Articles.find({ "saved": true })
+	db.Articles.find({ "saved": true })
 		.populate("notes")
 		.then(function(err, dbArticle) {
 
@@ -191,7 +191,7 @@ app.get("/articles/saved", function(req, res) {
 // POSt route for saving article
 app.post("/articles/save/:id", function(req, res) {
 	// use article id to find & update its boolean
-	Articles.findOneAndUpdate({ "_id": req.params.id }, { "saved": true })
+	db.Articles.findOneAndUpdate({ "_id": req.params.id }, { "saved": true })
 		.then(function(err, doc) {
 			// send doc to browser
 			res.send(doc)
@@ -206,7 +206,7 @@ app.post("/articles/save/:id", function(req, res) {
 // DELETE route for deleting article
 app.post("/articles/delete/:id", function() {
 	// use article _id to find & update saved boolean
-	Articles.findOneAndUpdate({ "_id": req.params.id}, { "saved": false }, { "notes": [] })
+	db.Articles.findOneAndUpdate({ "_id": req.params.id}, { "saved": false }, { "notes": [] })
 		.then(function(dbArticle) {
 			// if we're able to successfully update article, send back to client
 			res.json(dbArticle);
@@ -235,7 +235,7 @@ app.post("/articles/note/:note_id", function(req, res) {
 		}
 		else {
 
-		Articles.findOneAndUpdate({ _id: req.params.article_id }, { $push: { "notes": note } }, { new: true })
+		db.Articles.findOneAndUpdate({ _id: req.params.article_id }, { $push: { "notes": note } }, { new: true })
 		
 		.then(function(err) {
 			if (err) {
@@ -256,7 +256,7 @@ app.post("/articles/note/:note_id", function(req, res) {
 // DELETE route for deleting note
 app.get("/notes/delete/:note_id/:article_id", function(req, res) {
 	console.log("deleted!")
-	Notes.remove (
+	db.Notes.remove (
 		{
 			_id: mongojs.ObjectId(req.params.id)
 		},

@@ -14,7 +14,7 @@ $("body").on("click", "#scrape", function() {
 
 
 // save article button
-$("body").on("click", ".save", function() {
+$(".save-article").on("click", function() {
 	console.log("save button clicked")
 	var thisId = $(this).attr("data-id");
 	$.ajax({
@@ -40,7 +40,7 @@ $("body").on("click", ".delete", function() {
 
 
  /// single article view
- $("body").on("click", ".article-title", function() {
+ $(".article-title").on("click", function() {
  	var thisId = $(this).attr("data-id");
  	 	$.ajax({
 		method: "GET",
