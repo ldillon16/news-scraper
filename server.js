@@ -135,7 +135,7 @@ app.get("/articles", function(req, res) {
   db.Articles.find({}, function(error, doc) {
     // Log any errors
     if (error) {
-      console.log(error);
+      console.log("LOOK: " + error);
     }
     else {
       res.json(doc);
@@ -144,26 +144,26 @@ app.get("/articles", function(req, res) {
 });
 
 // GET route for getting article by id
-app.get("/articles/:_id", function(req, res) {
-	// grab article by id
-	db.Articles.findOne({ "_id": req.params.id })
-	// populate notes associated with the article
-	.populate("note")
-	.then(function(err, dbArticle) {
-		// if we're able to successfully update article, send back to client
-			// handlebars 
-			var hbsObject = {
-			 	Articles: dbArticle
-			 };
-			// console.log(hbsObject);
-			 res.render("article", hbsObject);
-	})
+// app.get("/articles/:_id", function(req, res) {
+// 	// grab article by id
+// 	db.Articles.findOne({ "_id": req.params.id })
+// 	// populate notes associated with the article
+// 	.populate("note")
+// 	.then(function(err, dbArticle) {
+// 		// if we're able to successfully update article, send back to client
+// 			// handlebars 
+// 			var hbsObject = {
+// 			 	Articles: dbArticle
+// 			 };
+// 			// console.log(hbsObject);
+// 			 res.render("article", hbsObject);
+// 	})
 
-	.catch(function(err) {
-		// if an error occurred, send to client
-		res.json(err);
-	});
-})
+// 	.catch(function(err) {
+// 		// if an error occurred, send to client
+// 		res.json(err);
+// 	});
+// })
 
 // GET route for getting saved articles
 app.get("/articles/saved", function(req, res) {
@@ -171,8 +171,8 @@ app.get("/articles/saved", function(req, res) {
 	console.log("SAVED");
 	db.Articles.find({ "saved": true })
 		.populate("notes")
-		.then(function(err, dbArticle) {
-
+		.then(function(dbArticle) {
+			console.log("saved: " + dbArticle)
 			// handlebars 
 
 			var hbsObject = {
@@ -182,16 +182,17 @@ app.get("/articles/saved", function(req, res) {
 			 res.render("saved", hbsObject);
 		})
 
-		.catch(function(err) {
-			// if an error occurred, send to client
-			res.json(err);
-		});
+		// .catch(function(err) {
+		// 	console.log("error: " + err)
+		// 	// if an error occurred, send to client
+		// 	res.json(err);
+		// });
 });
 
 // POSt route for saving article
 app.post("/articles/save/:id", function(req, res) {
 	// use article id to find & update its boolean
-	db.Articles.findOneAndUpdate({ "_id": req.params.id }, { "saved": true })
+	db.Articles.findOneAndUpdate({ "_id": req.params.id }, {$set: { "saved": true }})
 		.then(function(err, doc) {
 			// send doc to browser
 			res.send(doc)
@@ -204,18 +205,18 @@ app.post("/articles/save/:id", function(req, res) {
 
 
 // DELETE route for deleting article
-app.post("/articles/delete/:id", function() {
+app.post("/articles/delete/:id", function(req, res) {
 	// use article _id to find & update saved boolean
-	db.Articles.findOneAndUpdate({ "_id": req.params.id}, { "saved": false }, { "notes": [] })
-		.then(function(dbArticle) {
-			// if we're able to successfully update article, send back to client
-			res.json(dbArticle);
-		})
-
-		.catch(function(err) {
-			// if an error occurred, send to client
-			res.json(err);
-		})
+	db.Articles.findOneAndUpdate({ "_id": req.params.id}, {$set: { "saved": false, "notes": [] }} )
+		.exec(function(err, doc) {
+		
+		if (err) {
+			console.log(err);
+		}
+		else {
+			res.send(doc);
+		}
+	});
 });
 
 // POST route for creating new note
